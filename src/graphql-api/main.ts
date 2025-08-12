@@ -1,10 +1,11 @@
+// biome-ignore assist/source/organizeImports: reflect-metadata and env should load first
 import 'reflect-metadata'
+import { env } from '@/config/env'
 
 import { ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { FastifyAdapter } from '@nestjs/platform-fastify'
 import { AppModule } from '@/graphql-api/app.module'
-import { env } from '@/graphql-api/config/env'
 
 const bootstrap = async () => {
   const app = await NestFactory.create(AppModule, new FastifyAdapter())
