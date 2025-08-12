@@ -22,6 +22,9 @@
       "jsxQuoteStyle": "single",
       "semicolons": "asNeeded",
       "trailingCommas": "es5"
+    },
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
     }
   }
 }

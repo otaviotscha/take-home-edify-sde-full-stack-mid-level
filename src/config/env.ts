@@ -1,13 +1,17 @@
 import { plainToInstance } from 'class-transformer'
 import { IsIn, IsInt, IsPositive, validateSync } from 'class-validator'
+import { IsPostgresUrl } from '@/utils/customValidators'
 
 export class EnvSchema {
   @IsInt()
   @IsPositive()
-  GRAPHQL_API_PORT: number = 3000
+  GRAPHQL_API_PORT!: number
 
   @IsIn(['development', 'production', 'test'])
   NODE_ENV!: string
+
+  @IsPostgresUrl()
+  DATABASE_URL!: string
 }
 
 export const validateEnv = (config: Record<string, unknown>) => {
@@ -22,4 +26,11 @@ export const validateEnv = (config: Record<string, unknown>) => {
   return validatedConfig
 }
 
-export const env = validateEnv(process.env)
+let cachedEnv: EnvSchema
+
+export const getEnv = () => {
+  if (!cachedEnv) {
+    cachedEnv = validateEnv(process.env)
+  }
+  return cachedEnv
+}
