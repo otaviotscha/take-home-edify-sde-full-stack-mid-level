@@ -10,7 +10,10 @@
   },
   "linter": {
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "style": {
+        "useImportType": "off" 
+      }
     }
   },
   "javascript": {
