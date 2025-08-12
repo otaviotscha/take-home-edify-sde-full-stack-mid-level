@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "lint": "bun run biome check --write ./src",
+    "lint": "bun run biome check --write ./",
     "dev": "NODE_ENV=development bun --hot src/graphql-api/main.ts",
     "dev:watch": "NODE_ENV=development bun --watch src/graphql-api/main.ts",
     "start": "NODE_ENV=production bun src/graphql-api/main.ts"
