@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test } from 'bun:test'
-import { join } from 'node:path' // Import join for autoSchemaFile test
+import { join } from 'node:path'
 
 describe('graphqlConfig', () => {
   let originalEnv: NodeJS.ProcessEnv

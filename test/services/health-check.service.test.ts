@@ -1,23 +1,24 @@
-import { beforeEach, describe, expect, test } from 'bun:test'
-import { Test, TestingModule } from '@nestjs/testing'
+import { beforeEach, describe, expect, it } from 'bun:test'
 import { HealthCheckService } from '@/services/health-check.service'
 
 describe('HealthCheckService', () => {
-  let service: HealthCheckService
+  let healthCheckService: HealthCheckService
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [HealthCheckService],
-    }).compile()
-
-    service = module.get<HealthCheckService>(HealthCheckService)
+  beforeEach(() => {
+    healthCheckService = new HealthCheckService()
   })
 
-  test('should be defined', () => {
-    expect(service).toBeDefined()
+  it('should be defined', () => {
+    expect(healthCheckService).toBeDefined()
   })
 
-  test('should return "OK" for health check', () => {
-    expect(service.check()).toBe('OK')
+  describe('check', () => {
+    it('returns "OK"', () => {
+      expect(healthCheckService.check()).toBe('OK')
+    })
+
+    it('returns a string type', () => {
+      expect(typeof healthCheckService.check()).toBe('string')
+    })
   })
 })
