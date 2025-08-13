@@ -1,0 +1,63 @@
+import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql'
+import { DifficultyLevel } from '@/graphql-api/graphql/enums/difficulty-level.enum'
+import { IsDate, IsEnum, IsInt, IsOptional, IsPositive, IsUUID } from 'class-validator'
+
+@ObjectType()
+export class LearningSession {
+  @Field(() => ID)
+  @IsUUID()
+  id!: string
+
+  @Field(() => ID)
+  @IsUUID()
+  studentId!: string
+
+  @Field(() => ID)
+  @IsUUID()
+  vocabularySetId!: string
+
+  @Field(() => DifficultyLevel)
+  @IsEnum(DifficultyLevel)
+  difficulty!: DifficultyLevel
+
+  @Field(() => Int)
+  @IsInt()
+  @IsPositive()
+  durationMinutes!: number
+
+  @Field()
+  @IsDate()
+  startedAt!: Date
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsDate()
+  finishedAt?: Date
+
+  @Field(() => Int)
+  @IsInt()
+  score!: number
+}
+
+@InputType()
+export class StartLearningSessionInput {
+  @Field(() => ID)
+  @IsUUID()
+  vocabularySetId!: string
+
+  @Field(() => DifficultyLevel)
+  @IsEnum(DifficultyLevel)
+  difficulty!: DifficultyLevel
+
+  @Field(() => Int)
+  @IsInt()
+  @IsPositive()
+  durationMinutes!: number
+}
+
+@InputType()
+export class FinishLearningSessionInput {
+  @Field(() => ID)
+  @IsUUID()
+  sessionId!: string
+}

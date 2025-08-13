@@ -10,9 +10,9 @@ export class UserService {
     private readonly hashService: HashService
   ) {}
 
-  async createUser(input: CreateUserInput) {
-    const passwordHash = await this.hashService.hash(input.password)
-    return this.userRepository.createUser({ ...input, password: passwordHash })
+  async createUser(data: CreateUserInput) {
+    const passwordHash = await this.hashService.hash(data.password)
+    return this.userRepository.createUser({ ...data, passwordHash })
   }
 
   async findAllUsers() {
@@ -27,12 +27,12 @@ export class UserService {
     return this.userRepository.findOne(email)
   }
 
-  async updateUser(input: UpdateUserInput) {
-    let passwordHash: string | undefined
-    if (input.password) {
-      passwordHash = await this.hashService.hash(input.password)
+  async updateUser(data: UpdateUserInput) {
+    const newData = { ...data }
+    if (data.password) {
+      newData.password = await this.hashService.hash(data.password)
     }
-    return this.userRepository.updateUser({ ...input, password: passwordHash })
+    return this.userRepository.updateUser(newData)
   }
 
   async deleteUser(id: string) {

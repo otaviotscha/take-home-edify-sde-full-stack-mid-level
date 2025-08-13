@@ -1,28 +1,26 @@
-import { Field, InputType, ObjectType, registerEnumType } from '@nestjs/graphql'
-import { IsEmail, IsEnum, IsOptional, IsString, IsUUID, MinLength } from 'class-validator'
-
-export enum UserRole {
-  STUDENT = 'student',
-  TEACHER = 'teacher',
-}
-
-registerEnumType(UserRole, {
-  name: 'UserRole',
-  description: 'The role of the user (student or teacher)',
-})
+import { Field, InputType, ObjectType } from '@nestjs/graphql'
+import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID, MinLength } from 'class-validator'
+import { UserRole } from '@/graphql-api/graphql/enums/user-role.enum'
 
 @ObjectType()
 export class User {
   @Field(() => String)
+  @IsUUID()
   id!: string
 
   @Field(() => String)
+  @IsString()
+  @IsNotEmpty()
   name!: string
 
   @Field(() => String)
+  @IsString()
+  @IsNotEmpty()
+  @IsEmail()
   email!: string
 
   @Field(() => UserRole)
+  @IsEnum(UserRole)
   role!: UserRole
 }
 
@@ -30,7 +28,7 @@ export class User {
 export class CreateUserInput {
   @Field(() => String)
   @IsString()
-  @MinLength(1)
+  @IsNotEmpty()
   name!: string
 
   @Field(() => String)
@@ -49,9 +47,10 @@ export class CreateUserInput {
 
 @InputType()
 export class UpdateUserInput {
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
+  @IsOptional()
   @IsUUID()
-  id!: string
+  id?: string
 
   @Field(() => String, { nullable: true })
   @IsOptional()
@@ -61,19 +60,9 @@ export class UpdateUserInput {
 
   @Field(() => String, { nullable: true })
   @IsOptional()
-  @IsEmail()
-  email?: string
-
-  @Field(() => String, { nullable: true })
-  @IsOptional()
   @IsString()
   @MinLength(8)
   password?: string
-
-  @Field(() => UserRole, { nullable: true })
-  @IsOptional()
-  @IsEnum(UserRole)
-  role?: UserRole
 }
 
 @InputType()
@@ -84,5 +73,6 @@ export class LoginUserInput {
 
   @Field(() => String)
   @IsString()
+  @IsNotEmpty()
   password!: string
 }

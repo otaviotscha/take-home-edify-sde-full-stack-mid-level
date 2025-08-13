@@ -1,21 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { eq } from 'drizzle-orm'
 import { db } from '@/db'
-import { users } from '@/db/schema'
-import type { CreateUserInput, UpdateUserInput } from '@/graphql-api/graphql/dtos/user.dto'
+import { type CreateUser, type UpdateUser, users } from '@/db/schema'
 
 @Injectable()
 export class UserRepository {
-  async createUser(input: CreateUserInput) {
-    const [newUser] = await db
-      .insert(users)
-      .values({
-        name: input.name,
-        email: input.email,
-        passwordHash: input.password,
-        role: input.role,
-      })
-      .returning()
+  async createUser(data: CreateUser) {
+    const [newUser] = await db.insert(users).values(data).returning()
 
     return newUser
   }
@@ -37,20 +28,15 @@ export class UserRepository {
     return user.length ? user[0] : null
   }
 
-  async updateUser(input: UpdateUserInput) {
-    const [updatedUser] = await db
-      .update(users)
-      .set({
-        name: input.name,
-        email: input.email,
-        role: input.role,
-        ...(input.password && { passwordHash: input.password }),
-      })
-      .where(eq(users.id, input.id))
-      .returning()
+  async updateUser(data: UpdateUser) {
+    if (!data.id) {
+      throw new NotFoundException('No user ID provided')
+    }
+
+    const [updatedUser] = await db.update(users).set(data).where(eq(users.id, data.id)).returning()
 
     if (!updatedUser) {
-      throw new NotFoundException(`User with ID "${input.id}" not found`)
+      throw new NotFoundException(`User with ID "${data.id}" not found`)
     }
     return updatedUser
   }

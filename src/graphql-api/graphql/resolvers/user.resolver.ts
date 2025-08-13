@@ -36,8 +36,8 @@ export class UserResolver {
 
   @Mutation(() => User)
   @UseGuards(GqlAuthRolesGuard, SelfOrAdminGuard)
-  async updateUser(@Args('input') input: UpdateUserInput) {
-    return this.userService.updateUser(input)
+  async updateUser(@CurrentUser() user: User, @Args('input') input: UpdateUserInput) {
+    return this.userService.updateUser({ ...input, id: user.id })
   }
 
   @Mutation(() => User)
