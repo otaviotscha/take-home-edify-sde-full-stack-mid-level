@@ -1,9 +1,9 @@
 import { UseGuards } from '@nestjs/common'
 import { Args, Mutation, Resolver } from '@nestjs/graphql'
 import type { User } from '@/db/schema'
-import { CurrentUser } from '@/decorators/current-user.decorator'
+import { CurrentUser } from '@/graphql-api/decorators/current-user.decorator'
 import { LoginInput, Token } from '@/graphql-api/graphql/dtos/auth.dto'
-import { GqlLocalAuthGuard } from '@/guards/gql-local-auth.guard'
+import { GqlLocalAuthGuard } from '@/graphql-api/guards/gql-local-auth.guard'
 import { AuthService } from '@/services/auth.service'
 
 @Resolver()
