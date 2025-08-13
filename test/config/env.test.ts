@@ -27,6 +27,7 @@ describe('EnvSchema Validation', () => {
     process.env.GRAPHQL_API_PORT = '3000'
     process.env.NODE_ENV = 'development'
     process.env.DATABASE_URL = 'postgresql://user:password@host:5432/database'
+    process.env.JWT_SECRET = 'test-secret'
 
     const validatedConfig = getFreshEnv()
     expect(validatedConfig.GRAPHQL_API_PORT).toBe(3000)

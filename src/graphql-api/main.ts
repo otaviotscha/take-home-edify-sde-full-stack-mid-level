@@ -1,7 +1,6 @@
 // biome-ignore assist/source/organizeImports: reflect-metadata and env should load first
 import 'reflect-metadata'
 import { getEnv } from '@/config/env'
-
 import { ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { FastifyAdapter } from '@nestjs/platform-fastify'

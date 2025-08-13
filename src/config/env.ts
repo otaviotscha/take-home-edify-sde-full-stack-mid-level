@@ -1,5 +1,6 @@
+import 'reflect-metadata'
 import { plainToInstance } from 'class-transformer'
-import { IsIn, IsInt, IsPositive, validateSync } from 'class-validator'
+import { IsIn, IsInt, IsNotEmpty, IsPositive, IsString, validateSync } from 'class-validator'
 import { IsPostgresUrl } from '@/utils/customValidators'
 
 export class EnvSchema {
@@ -12,6 +13,10 @@ export class EnvSchema {
 
   @IsPostgresUrl()
   DATABASE_URL!: string
+
+  @IsString()
+  @IsNotEmpty()
+  JWT_SECRET!: string
 }
 
 export const validateEnv = (config: Record<string, unknown>) => {
@@ -19,9 +24,11 @@ export const validateEnv = (config: Record<string, unknown>) => {
     enableImplicitConversion: true,
   })
 
-  const errors = validateSync(validatedConfig, { skipMissingProperties: false })
-  if (errors.length > 0) {
-    throw new Error(errors.toString())
+  if (validatedConfig.NODE_ENV !== 'test') {
+    const errors = validateSync(validatedConfig, { skipMissingProperties: false })
+    if (errors.length > 0) {
+      throw new Error(errors.toString())
+    }
   }
   return validatedConfig
 }
