@@ -75,31 +75,53 @@ export class LearningSessionService {
 
     if (session.finishedAt) {
       return {
-        attempt: null,
-        correct: false,
         message: 'Session already finished.',
         sessionFinished: true,
       }
     }
 
     const sessionStartedAt = session.startedAt
-    const sessionDurationMs = session.durationMinutes * 60 * 1000 // Convert minutes to milliseconds
+    const sessionDurationMs = session.maxDurationMs
     const sessionExpiresAt = new Date(sessionStartedAt.getTime() + sessionDurationMs)
 
     if (now > sessionExpiresAt) {
       // Session has expired
-      await this.finishSession({ sessionId }) // Finish the session
+      await this.finishSession({ sessionId })
       return {
-        attempt: null,
-        correct: false,
         message: 'Session expired and finished.',
         sessionFinished: true,
       }
     }
 
+    const alreadyAttemped = await this.attemptRepo.listAttemptsForSessionAndWord(sessionId, wordId)
+    if (alreadyAttemped.length) {
+      return {
+        message: 'Word already answered.',
+        sessionFinished: false,
+      }
+    }
     const word = await this.sessionRepo.getWordById(wordId)
     const correct = word.term.toLowerCase() === userAnswer.trim().toLowerCase()
     const attempt = await this.attemptRepo.createAttempt({ learningSessionId: sessionId, wordId, correct, userAnswer })
-    return { ...attempt, correct, message: 'Attempt submitted successfully.', sessionFinished: false }
+
+    const nextWord = await this.getNextWordForSession(sessionId)
+    if (!nextWord) {
+      await this.finishSession({ sessionId })
+      return {
+        userAnswer: attempt?.userAnswer,
+        correctAnswer: word.term,
+        correct,
+        message: 'No next word. Session finished.',
+        sessionFinished: true,
+      }
+    }
+
+    return {
+      userAnswer: attempt?.userAnswer,
+      correctAnswer: word.term,
+      correct,
+      message: 'Attempt submitted successfully.',
+      sessionFinished: false,
+    }
   }
 }

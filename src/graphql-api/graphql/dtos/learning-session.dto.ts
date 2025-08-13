@@ -23,7 +23,13 @@ export class LearningSession {
   @Field(() => Int)
   @IsInt()
   @IsPositive()
-  durationMinutes!: number
+  maxDurationMs!: number
+
+  @Field(() => Int)
+  @IsOptional()
+  @IsInt()
+  @IsPositive()
+  durationMs?: number
 
   @Field()
   @IsDate()
@@ -52,7 +58,7 @@ export class StartLearningSessionInput {
   @Field(() => Int)
   @IsInt()
   @IsPositive()
-  durationMinutes!: number
+  maxDurationMs!: number
 }
 
 @InputType()

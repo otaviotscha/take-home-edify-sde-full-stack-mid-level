@@ -4,7 +4,6 @@ import { type User } from '@/db/schema'
 import { CurrentUser } from '@/graphql-api/decorators/current-user.decorator'
 import { SubmitAttemptInput, SubmitAttemptResponse } from '@/graphql-api/graphql/dtos/attempt.dto'
 import {
-  FinishLearningSessionInput,
   LearningSession,
   StartLearningSessionInput,
 } from '@/graphql-api/graphql/dtos/learning-session.dto'
@@ -38,12 +37,6 @@ export class LearningSessionResolver {
   @UseGuards(GqlAuthRolesGuard)
   startSession(@Args('input') input: StartLearningSessionInput, @CurrentUser() user: User) {
     return this.sessionService.startSession(input, user.id)
-  }
-
-  @Mutation(() => LearningSession)
-  @UseGuards(GqlAuthRolesGuard)
-  finishSession(@Args('input') input: FinishLearningSessionInput) {
-    return this.sessionService.finishSession(input)
   }
 
   @Mutation(() => SubmitAttemptResponse)

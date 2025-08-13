@@ -1,11 +1,19 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { and, eq, notInArray } from 'drizzle-orm'
 import { db } from '@/db'
-import { attempts, type CreateLearningSession, learningSessions, words } from '@/db/schema'
+import { attempts, type CreateLearningSession, learningSessions, vocabularySets, words } from '@/db/schema'
 
 @Injectable()
 export class LearningSessionRepository {
   async startSession(data: CreateLearningSession) {
+    const vocabularySet = await db
+      .select()
+      .from(vocabularySets)
+      .where(eq(vocabularySets.difficulty, data.difficulty))
+      .limit(1)
+      .then((rows) => (rows.length ? rows[0] : null))
+
+    if(!vocabularySet) throw new NotFoundException(`No vocabulary set for the difficulty ${data.difficulty}`)
     const [session] = await db.insert(learningSessions).values(data).returning()
     return session
   }
@@ -13,11 +21,12 @@ export class LearningSessionRepository {
   async finishSession(sessionId: string, score: number) {
     const finishedAt = new Date()
     const foundSession = await this.findSessionById(sessionId)
-    const durationMinutes = Math.round((finishedAt.getTime() - foundSession.startedAt.getTime()) / 1000 / 60)
+    const calculatedDurationMs = Math.round(finishedAt.getTime() - foundSession.startedAt.getTime())
+    const durationMs = calculatedDurationMs > foundSession.maxDurationMs ? foundSession.maxDurationMs : calculatedDurationMs
 
     const [session] = await db
       .update(learningSessions)
-      .set({ finishedAt, durationMinutes, score })
+      .set({ finishedAt, durationMs, score })
       .where(eq(learningSessions.id, sessionId))
       .returning()
     if (!session) throw new NotFoundException('Learning session not found')
@@ -55,7 +64,7 @@ export class LearningSessionRepository {
       .where(
         and(
           eq(words.vocabularySetId, session.vocabularySetId),
-          notInArray(words.id, attemptedWordIds.length ? attemptedWordIds : [''])
+          notInArray(words.id, attemptedWordIds)
         )
       )
       .limit(1)

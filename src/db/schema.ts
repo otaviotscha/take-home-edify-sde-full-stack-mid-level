@@ -61,7 +61,8 @@ export const learningSessions = pgTable('learning_sessions', {
     .notNull()
     .references(() => vocabularySets.id, { onDelete: 'cascade' }),
   difficulty: difficultyLevelEnum('difficulty').notNull(),
-  durationMinutes: integer('duration_minutes').notNull(),
+  maxDurationMs: integer('max_duration_milliseconds').notNull(),
+  durationMs: integer('duration_milliseconds'),
   startedAt: timestamp('started_at').defaultNow().notNull(),
   finishedAt: timestamp('finished_at'),
   score: integer('score').notNull().default(0),

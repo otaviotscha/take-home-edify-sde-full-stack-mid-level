@@ -32,12 +32,22 @@ export class Attempt {
 
 @ObjectType()
 export class SubmitAttemptResponse {
-  @Field(() => Attempt, { nullable: true })
-  attempt?: Attempt
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  userAnswer?: string
 
-  @Field()
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  correctAnswer?: string
+
+  @Field(() => Boolean, { nullable: true })
+  @IsOptional()
   @IsBoolean()
-  correct!: boolean
+  correct?: boolean
 
   @Field()
   @IsString()

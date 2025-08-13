@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { eq } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 import { db } from '@/db'
 import { attempts, type CreateAttempt } from '@/db/schema'
 
@@ -12,5 +12,12 @@ export class AttemptRepository {
 
   async listAttemptsForSession(sessionId: string) {
     return db.select().from(attempts).where(eq(attempts.learningSessionId, sessionId))
+  }
+
+  async listAttemptsForSessionAndWord(sessionId: string, wordId: string) {
+    return db
+      .select()
+      .from(attempts)
+      .where(and(eq(attempts.learningSessionId, sessionId), eq(attempts.wordId, wordId)))
   }
 }
