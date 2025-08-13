@@ -9,7 +9,7 @@ import {
   StartLearningSessionInput,
 } from '@/graphql-api/graphql/dtos/learning-session.dto'
 import { Word } from '@/graphql-api/graphql/dtos/word.dto'
-import { GqlAuthRolesGuard } from '@/graphql-api/guards/gql-auth-roles.guard'
+import { GqlAuthRolesGuard } from '@/graphql-api/graphql/guards/gql-auth-roles.guard'
 import { LearningSessionService } from '@/services/learning-session.service'
 
 @Resolver(() => LearningSession)

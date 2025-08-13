@@ -3,8 +3,8 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { CurrentUser } from '@/graphql-api/decorators/current-user.decorator'
 import { Roles } from '@/graphql-api/decorators/roles.decorator'
 import { CreateUserInput, UpdateUserInput, User } from '@/graphql-api/graphql/dtos/user.dto'
-import { GqlAuthRolesGuard } from '@/graphql-api/guards/gql-auth-roles.guard'
-import { SelfOrAdminGuard } from '@/graphql-api/guards/self-or-admin.guard'
+import { GqlAuthRolesGuard } from '@/graphql-api/graphql/guards/gql-auth-roles.guard'
+import { SelfOrAdminGuard } from '@/graphql-api/graphql/guards/self-or-admin.guard'
 import { UserService } from '@/services/user.service'
 
 @Resolver(() => User)

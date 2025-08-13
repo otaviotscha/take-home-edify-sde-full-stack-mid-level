@@ -1,6 +1,6 @@
 import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql'
-import { DifficultyLevel } from '@/graphql-api/graphql/enums/difficulty-level.enum'
 import { IsDate, IsEnum, IsInt, IsOptional, IsPositive, IsUUID } from 'class-validator'
+import { DifficultyLevel } from '@/graphql-api/graphql/enums/difficulty-level.enum'
 
 @ObjectType()
 export class LearningSession {

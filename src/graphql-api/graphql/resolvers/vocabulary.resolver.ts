@@ -8,7 +8,8 @@ import {
   VocabularySet,
 } from '@/graphql-api/graphql/dtos/vocabulary.dto'
 import { Word } from '@/graphql-api/graphql/dtos/word.dto'
-import { GqlAuthRolesGuard } from '@/graphql-api/guards/gql-auth-roles.guard'
+import { AdminGuard } from '@/graphql-api/graphql/guards/admin.guard'
+import { GqlAuthRolesGuard } from '@/graphql-api/graphql/guards/gql-auth-roles.guard'
 import { VocabularyService } from '@/services/vocabulary.service'
 import { WordService } from '@/services/word.service'
 
@@ -32,19 +33,19 @@ export class VocabularyResolver {
   }
 
   @Mutation(() => VocabularySet)
-  @UseGuards(GqlAuthRolesGuard)
+  @UseGuards(GqlAuthRolesGuard, AdminGuard)
   createVocabularySet(@Args('input') input: CreateVocabularySetInput, @CurrentUser() user: User) {
     return this.vocabularyService.createVocabularySet({ ...input, createdBy: user.id })
   }
 
   @Mutation(() => VocabularySet)
-  @UseGuards(GqlAuthRolesGuard)
+  @UseGuards(GqlAuthRolesGuard, AdminGuard)
   updateVocabularySet(@Args('input') input: UpdateVocabularySetInput) {
     return this.vocabularyService.updateVocabularySet(input)
   }
 
   @Mutation(() => VocabularySet)
-  @UseGuards(GqlAuthRolesGuard)
+  @UseGuards(GqlAuthRolesGuard, AdminGuard)
   deleteVocabularySet(@Args('id') id: string) {
     return this.vocabularyService.deleteVocabularySet(id)
   }

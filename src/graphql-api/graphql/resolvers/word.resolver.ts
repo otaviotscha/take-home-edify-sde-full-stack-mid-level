@@ -1,7 +1,8 @@
 import { UseGuards } from '@nestjs/common'
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { CreateWordInput, UpdateWordInput, Word } from '@/graphql-api/graphql/dtos/word.dto'
-import { GqlAuthRolesGuard } from '@/graphql-api/guards/gql-auth-roles.guard'
+import { AdminGuard } from '@/graphql-api/graphql/guards/admin.guard'
+import { GqlAuthRolesGuard } from '@/graphql-api/graphql/guards/gql-auth-roles.guard'
 import { WordService } from '@/services/word.service'
 
 @Resolver(() => Word)
@@ -21,19 +22,19 @@ export class WordResolver {
   }
 
   @Mutation(() => Word)
-  @UseGuards(GqlAuthRolesGuard)
+  @UseGuards(GqlAuthRolesGuard, AdminGuard)
   createWord(@Args('input') input: CreateWordInput) {
     return this.wordService.createWord(input)
   }
 
   @Mutation(() => Word)
-  @UseGuards(GqlAuthRolesGuard)
+  @UseGuards(GqlAuthRolesGuard, AdminGuard)
   updateWord(@Args('input') input: UpdateWordInput) {
     return this.wordService.updateWord(input)
   }
 
   @Mutation(() => Word)
-  @UseGuards(GqlAuthRolesGuard)
+  @UseGuards(GqlAuthRolesGuard, AdminGuard)
   deleteWord(@Args('id') id: string) {
     return this.wordService.deleteWord(id)
   }
