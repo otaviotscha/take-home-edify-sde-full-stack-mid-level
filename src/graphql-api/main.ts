@@ -6,7 +6,7 @@ import { NestFactory } from '@nestjs/core'
 import { FastifyAdapter } from '@nestjs/platform-fastify'
 import { AppModule } from '@/graphql-api/app.module'
 
-const bootstrap = async () => {
+const bootstrap = async (): Promise<void> => {
   const app = await NestFactory.create(AppModule, new FastifyAdapter())
   app.useGlobalPipes(new ValidationPipe())
 

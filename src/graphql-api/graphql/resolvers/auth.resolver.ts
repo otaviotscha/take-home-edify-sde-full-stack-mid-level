@@ -12,7 +12,7 @@ export class AuthResolver {
 
   @Mutation(() => Token)
   @UseGuards(GqlLocalAuthGuard)
-  async login(@Args('input') _input: LoginInput, @CurrentUser() user: User) {
+  async login(@Args('input') _input: LoginInput, @CurrentUser() user: User): Promise<Token> {
     return this.authService.login(user)
   }
 }

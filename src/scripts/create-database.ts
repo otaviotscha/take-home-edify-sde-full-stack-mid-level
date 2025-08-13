@@ -14,7 +14,7 @@ const pool = new Pool({
   connectionString: poolConnectionString,
 })
 
-const createDatabase = async () => {
+const createDatabase = async (): Promise<void> => {
   try {
     await pool.query('CREATE DATABASE "take-home-edify-sde-full-stack-mid-level"')
     console.log('Database created')

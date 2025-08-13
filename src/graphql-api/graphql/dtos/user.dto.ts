@@ -1,9 +1,10 @@
+import '@/graphql-api/graphql/enums/user-role.enum'
 import { Field, InputType, ObjectType } from '@nestjs/graphql'
 import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID, MinLength } from 'class-validator'
-import { UserRole } from '@/graphql-api/graphql/enums/user-role.enum'
+import { UserRoleEnum } from '@/db/schema'
 
 @ObjectType()
-export class User {
+export class UserResponse {
   @Field(() => String)
   @IsUUID()
   id!: string
@@ -19,9 +20,9 @@ export class User {
   @IsEmail()
   email!: string
 
-  @Field(() => UserRole)
-  @IsEnum(UserRole)
-  role!: UserRole
+  @Field(() => UserRoleEnum)
+  @IsEnum(UserRoleEnum)
+  role!: UserRoleEnum
 }
 
 @InputType()
@@ -40,9 +41,9 @@ export class CreateUserInput {
   @MinLength(8)
   password!: string
 
-  @Field(() => UserRole)
-  @IsEnum(UserRole)
-  role!: UserRole
+  @Field(() => UserRoleEnum)
+  @IsEnum(UserRoleEnum)
+  role!: UserRoleEnum
 }
 
 @InputType()

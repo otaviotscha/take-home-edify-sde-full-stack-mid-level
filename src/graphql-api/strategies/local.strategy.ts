@@ -1,8 +1,8 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { PassportStrategy } from '@nestjs/passport'
 import { Strategy } from 'passport-local'
-import type { User } from '@/db/schema'
 import { AuthService } from '@/services/auth.service'
+import type { UserResponse } from '../graphql/dtos/user.dto'
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
@@ -10,7 +10,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     super({ usernameField: 'email' })
   }
 
-  async validate(email: string, pass: string): Promise<User> {
+  async validate(email: string, pass: string): Promise<UserResponse> {
     const user = await this.authService.validateUser(email, pass)
     if (!user) {
       throw new UnauthorizedException()

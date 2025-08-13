@@ -2,7 +2,7 @@ import { Field, ID, InputType, ObjectType } from '@nestjs/graphql'
 import { IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator'
 
 @ObjectType()
-export class Word {
+export class WordResponse {
   @Field(() => ID)
   @IsUUID()
   id!: string
@@ -25,7 +25,7 @@ export class Word {
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  exampleSentence?: string
+  exampleSentence!: string | null
 }
 
 @InputType()
@@ -48,7 +48,7 @@ export class CreateWordInput {
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  exampleSentence?: string
+  exampleSentence!: string | null
 }
 
 @InputType()
@@ -71,5 +71,5 @@ export class UpdateWordInput {
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  exampleSentence?: string
+  exampleSentence!: string | null
 }

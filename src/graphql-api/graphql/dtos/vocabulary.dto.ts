@@ -1,9 +1,9 @@
 import { Field, ID, InputType, ObjectType } from '@nestjs/graphql'
 import { IsDate, IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator'
-import { DifficultyLevel } from '@/graphql-api/graphql/enums/difficulty-level.enum'
+import { DifficultyLevelEnum } from '@/db/schema'
 
 @ObjectType()
-export class VocabularySet {
+export class VocabularySetResponse {
   @Field(() => ID)
   @IsUUID()
   id!: string
@@ -17,11 +17,11 @@ export class VocabularySet {
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  description?: string
+  description!: string | null
 
-  @Field(() => DifficultyLevel)
-  @IsEnum(DifficultyLevel)
-  difficulty!: DifficultyLevel
+  @Field(() => DifficultyLevelEnum)
+  @IsEnum(DifficultyLevelEnum)
+  difficulty!: DifficultyLevelEnum
 
   @Field()
   @IsDate()
@@ -43,11 +43,11 @@ export class CreateVocabularySetInput {
   @Field({ nullable: true })
   @IsString()
   @IsNotEmpty()
-  description?: string
+  description!: string | null
 
-  @Field(() => DifficultyLevel)
-  @IsEnum(DifficultyLevel)
-  difficulty!: DifficultyLevel
+  @Field(() => DifficultyLevelEnum)
+  @IsEnum(DifficultyLevelEnum)
+  difficulty!: DifficultyLevelEnum
 }
 
 @InputType()

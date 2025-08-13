@@ -19,7 +19,7 @@ export class EnvSchema {
   JWT_SECRET!: string
 }
 
-export const validateEnv = (config: Record<string, unknown>) => {
+export const validateEnv = (config: Record<string, unknown>): EnvSchema => {
   const validatedConfig = plainToInstance(EnvSchema, config, {
     enableImplicitConversion: true,
   })
@@ -35,7 +35,7 @@ export const validateEnv = (config: Record<string, unknown>) => {
 
 let cachedEnv: EnvSchema
 
-export const getEnv = () => {
+export const getEnv = (): EnvSchema => {
   if (!cachedEnv) {
     cachedEnv = validateEnv(process.env)
   }

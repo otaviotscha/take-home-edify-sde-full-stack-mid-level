@@ -11,19 +11,13 @@ export class GqlAuthRolesGuard extends AuthGuard('jwt') {
     super()
   }
 
-  override getRequest(context: ExecutionContext) {
+  override getRequest(context: ExecutionContext): unknown {
     const ctx = GqlExecutionContext.create(context)
     return ctx.getContext().req
   }
 
-  override canActivate(context: ExecutionContext) {
-    const canActivate = super.canActivate(context) as boolean | Promise<boolean>
-    if (canActivate instanceof Promise) {
-      return canActivate.then((result) => {
-        if (!result) return false
-        return this.checkRoles(context)
-      })
-    }
+  override async canActivate(context: ExecutionContext): Promise<boolean> {
+    const canActivate = await super.canActivate(context)
     if (!canActivate) return false
     return this.checkRoles(context)
   }

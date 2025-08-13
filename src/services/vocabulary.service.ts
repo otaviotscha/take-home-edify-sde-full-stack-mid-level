@@ -1,29 +1,29 @@
 import { Injectable } from '@nestjs/common'
 import type { CreateVocabularySet } from '@/db/schema'
-import type { UpdateVocabularySetInput } from '@/graphql-api/graphql/dtos/vocabulary.dto'
+import type { UpdateVocabularySetInput, VocabularySetResponse } from '@/graphql-api/graphql/dtos/vocabulary.dto'
 import { VocabularyRepository } from '@/repositories/vocabulary.repository'
 
 @Injectable()
 export class VocabularyService {
   constructor(private readonly vocabularyRepository: VocabularyRepository) {}
 
-  createVocabularySet(data: CreateVocabularySet) {
+  createVocabularySet(data: CreateVocabularySet): Promise<VocabularySetResponse | null> {
     return this.vocabularyRepository.createVocabularySet(data)
   }
 
-  findVocabularySetById(id: string) {
+  findVocabularySetById(id: string): Promise<VocabularySetResponse | null> {
     return this.vocabularyRepository.findVocabularySetById(id)
   }
 
-  updateVocabularySet(data: UpdateVocabularySetInput) {
+  updateVocabularySet(data: UpdateVocabularySetInput): Promise<VocabularySetResponse> {
     return this.vocabularyRepository.updateVocabularySet(data)
   }
 
-  deleteVocabularySet(id: string) {
+  deleteVocabularySet(id: string): Promise<VocabularySetResponse> {
     return this.vocabularyRepository.deleteVocabularySet(id)
   }
 
-  listVocabularySets() {
+  listVocabularySets(): Promise<VocabularySetResponse[]> {
     return this.vocabularyRepository.listVocabularySets()
   }
 }

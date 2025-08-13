@@ -2,7 +2,7 @@ import { Field, ID, InputType, ObjectType } from '@nestjs/graphql'
 import { IsBoolean, IsDate, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator'
 
 @ObjectType()
-export class Attempt {
+export class AttemptResponse {
   @Field(() => ID)
   @IsUUID()
   id!: string
@@ -27,28 +27,38 @@ export class Attempt {
   @Field({ nullable: true })
   @IsOptional()
   @IsDate()
-  attemptedAt?: Date
+  attemptedAt!: Date | null
 }
 
 @ObjectType()
-export class SubmitAttemptResponse {
+export class SubmitAttemptSuccessResponse {
   @Field(() => String, { nullable: true })
-  @IsOptional()
   @IsString()
   @IsNotEmpty()
-  userAnswer?: string
+  userAnswer!: string
 
   @Field(() => String, { nullable: true })
-  @IsOptional()
   @IsString()
   @IsNotEmpty()
-  correctAnswer?: string
+  correctAnswer!: string
 
   @Field(() => Boolean, { nullable: true })
-  @IsOptional()
   @IsBoolean()
-  correct?: boolean
+  correct!: boolean
 
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  message!: string | null
+
+  @Field()
+  @IsBoolean()
+  sessionFinished!: boolean
+}
+
+@ObjectType()
+export class SubmitAttemptFailureResponse {
   @Field()
   @IsString()
   @IsNotEmpty()

@@ -1,8 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
+import type { SubmitAttemptFailureResponse, SubmitAttemptSuccessResponse } from '@/graphql-api/graphql/dtos/attempt.dto'
 import type {
   FinishLearningSessionInput,
+  LearningSessionResponse,
   StartLearningSessionInput,
 } from '@/graphql-api/graphql/dtos/learning-session.dto'
+import type { WordResponse } from '@/graphql-api/graphql/dtos/word.dto'
 import { AttemptRepository } from '@/repositories/attempt.repository'
 import { LearningSessionRepository } from '@/repositories/learning-session.repository'
 import { WordRepository } from '@/repositories/word.repository'
@@ -15,11 +18,11 @@ export class LearningSessionService {
     private readonly wordRepo: WordRepository
   ) {}
 
-  async startSession(data: StartLearningSessionInput, studentId: string) {
+  async startSession(data: StartLearningSessionInput, studentId: string): Promise<LearningSessionResponse | null> {
     return this.sessionRepo.startSession({ ...data, studentId })
   }
 
-  async finishSession(data: FinishLearningSessionInput) {
+  async finishSession(data: FinishLearningSessionInput): Promise<LearningSessionResponse> {
     const session = await this.sessionRepo.findSessionById(data.sessionId)
     if (!session) {
       throw new NotFoundException(`Learning session with ID ${data.sessionId} not found.`)
@@ -53,19 +56,23 @@ export class LearningSessionService {
     return this.sessionRepo.finishSession(data.sessionId, score)
   }
 
-  async getSessionById(sessionId: string) {
+  async getSessionById(sessionId: string): Promise<LearningSessionResponse> {
     return this.sessionRepo.findSessionById(sessionId)
   }
 
-  async listSessionsByStudent(studentId: string) {
+  async listSessionsByStudent(studentId: string): Promise<LearningSessionResponse[]> {
     return this.sessionRepo.listSessionsByStudent(studentId)
   }
 
-  async getNextWordForSession(sessionId: string) {
+  async getNextWordForSession(sessionId: string): Promise<WordResponse | null> {
     return this.sessionRepo.getNextWordForSession(sessionId)
   }
 
-  async submitAttempt(sessionId: string, wordId: string, userAnswer: string) {
+  async submitAttempt(
+    sessionId: string,
+    wordId: string,
+    userAnswer: string
+  ): Promise<SubmitAttemptSuccessResponse | SubmitAttemptFailureResponse> {
     const now = new Date()
 
     const session = await this.sessionRepo.findSessionById(sessionId)

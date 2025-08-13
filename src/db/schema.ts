@@ -1,33 +1,40 @@
 import { boolean, integer, pgEnum, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core'
 
-export const userRoleEnum = pgEnum('user_role', ['student', 'teacher'])
+export enum UserRoleEnum {
+  STUDENT = 'student',
+  TEACHER = 'teacher',
+}
+
+export const userRolePgEnum = pgEnum('user_role', UserRoleEnum)
 
 export const users = pgTable('users', {
   id: uuid('id').defaultRandom().primaryKey(),
   name: text('name').notNull(),
   email: varchar('email', { length: 320 }).notNull().unique(),
   passwordHash: text('password_hash').notNull(),
-  role: userRoleEnum('role').notNull(),
+  role: userRolePgEnum('role').notNull(),
 })
 
 export type User = typeof users.$inferSelect
 export type CreateUser = typeof users.$inferInsert
 export type UpdateUser = Partial<typeof users.$inferInsert>
 
-export const difficultyLevelEnum = pgEnum('difficulty_level', [
-  'A1-beginner',
-  'A2-elementary',
-  'B1-intermediate',
-  'B2-upper-intermediate',
-  'C1-advanced',
-  'C2-proficient',
-])
+export enum DifficultyLevelEnum {
+  A1 = 'A1-beginner',
+  A2 = 'A2-elementary',
+  B1 = 'B1-intermediate',
+  B2 = 'B2-upper-intermediate',
+  C1 = 'C1-advanced',
+  C2 = 'C2-proficient',
+}
+
+export const difficultyLevelPgEnum = pgEnum('difficulty_level', DifficultyLevelEnum)
 
 export const vocabularySets = pgTable('vocabulary_sets', {
   id: uuid('id').defaultRandom().primaryKey(),
   name: varchar('name', { length: 255 }).notNull(),
   description: text('description'),
-  difficulty: difficultyLevelEnum('difficulty').notNull(),
+  difficulty: difficultyLevelPgEnum('difficulty').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   createdBy: uuid('created_by')
     .notNull()
@@ -60,7 +67,7 @@ export const learningSessions = pgTable('learning_sessions', {
   vocabularySetId: uuid('vocabulary_set_id')
     .notNull()
     .references(() => vocabularySets.id, { onDelete: 'cascade' }),
-  difficulty: difficultyLevelEnum('difficulty').notNull(),
+  difficulty: difficultyLevelPgEnum('difficulty').notNull(),
   maxDurationMs: integer('max_duration_milliseconds').notNull(),
   durationMs: integer('duration_milliseconds'),
   startedAt: timestamp('started_at').defaultNow().notNull(),
