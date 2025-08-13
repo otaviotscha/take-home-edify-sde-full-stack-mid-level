@@ -2,7 +2,7 @@
   "name": "take-home-edify-sde-full-stack-mid-level",
   "module": "index.ts",
   "type": "module",
-  "private": true,
+  "license": "GPL-V3",
   "scripts": {
     "lint": "bun run biome check --write ./",
     "dev": "NODE_ENV=development bun --watch src/graphql-api/main.ts",
