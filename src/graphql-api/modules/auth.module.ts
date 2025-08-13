@@ -3,7 +3,7 @@ import { JwtModule } from '@nestjs/jwt'
 import { PassportModule } from '@nestjs/passport'
 import { getEnv } from '@/config/env'
 import { AuthResolver } from '@/graphql-api/graphql/resolvers/auth.resolver'
-import { GqlAuthGuard } from '@/graphql-api/guards/gql-auth.guard'
+import { GqlAuthRolesGuard } from '@/graphql-api/guards/gql-auth-roles.guard'
 import { GqlLocalAuthGuard } from '@/graphql-api/guards/gql-local-auth.guard'
 import { HashModule } from '@/graphql-api/modules/hash.module'
 import { UserModule } from '@/graphql-api/modules/user.module'
@@ -21,7 +21,7 @@ import { AuthService } from '@/services/auth.service'
       signOptions: { expiresIn: '60m' },
     }),
   ],
-  providers: [AuthService, AuthResolver, JwtStrategy, LocalStrategy, GqlLocalAuthGuard, GqlAuthGuard],
+  providers: [AuthService, AuthResolver, JwtStrategy, LocalStrategy, GqlLocalAuthGuard, GqlAuthRolesGuard],
   exports: [AuthService],
 })
 export class AuthModule {}
