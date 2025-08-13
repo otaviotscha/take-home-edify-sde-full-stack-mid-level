@@ -1,77 +1,41 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
-import { eq } from 'drizzle-orm'
-import { db } from '@/db'
-import { users } from '@/db/schema'
-import { CreateUserInput, UpdateUserInput } from '@/graphql-api/graphql/dtos/user.dto'
+import { Injectable } from '@nestjs/common'
+import type { CreateUserInput, UpdateUserInput } from '@/graphql-api/graphql/dtos/user.dto'
+import { UserRepository } from '@/repositories/user.repository'
 import { HashService } from '@/services/hash.service'
 
 @Injectable()
 export class UserService {
-  constructor(private readonly hashService: HashService) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly hashService: HashService
+  ) {}
 
   async createUser(input: CreateUserInput) {
-    const hashedPassword = await this.hashService.hash(input.password)
-    const [newUser] = await db
-      .insert(users)
-      .values({
-        name: input.name,
-        email: input.email,
-        passwordHash: hashedPassword,
-        role: input.role,
-      })
-      .returning()
-
-    return newUser
+    const passwordHash = await this.hashService.hash(input.password)
+    return this.userRepository.createUser({ ...input, password: passwordHash })
   }
 
   async findAllUsers() {
-    return db.select().from(users)
+    return this.userRepository.findAllUsers()
   }
 
   async findUserById(id: string) {
-    const user = await db.select().from(users).where(eq(users.id, id)).limit(1)
-    if (!user.length) {
-      throw new NotFoundException(`User with ID "${id}" not found`)
-    }
-    return user[0]
+    return this.userRepository.findUserById(id)
   }
 
   async findOne(email: string) {
-    const user = await db.select().from(users).where(eq(users.email, email)).limit(1)
-    if (!user.length) {
-      return null
-    }
-    return user[0]
+    return this.userRepository.findOne(email)
   }
 
   async updateUser(input: UpdateUserInput) {
-    const { id, password, ...userData } = input
     let passwordHash: string | undefined
-
-    if (password) {
-      passwordHash = await this.hashService.hash(password)
+    if (input.password) {
+      passwordHash = await this.hashService.hash(input.password)
     }
-
-    const [updatedUser] = await db
-      .update(users)
-      .set({
-        ...userData,
-        ...(passwordHash && { passwordHash }),
-      })
-      .where(eq(users.id, id))
-      .returning()
-
-    if (!updatedUser) {
-      throw new NotFoundException(`User with ID "${id}" not found`)
-    }
-    return updatedUser
+    return this.userRepository.updateUser({ ...input, password: passwordHash })
   }
 
   async deleteUser(id: string) {
-    const [deletedUser] = await db.delete(users).where(eq(users.id, id)).returning()
-    if (!deletedUser) {
-      throw new NotFoundException(`User with ID "${id}" not found`)
-    }
-    return deletedUser
+    return this.userRepository.deleteUser(id)
   }
 }
