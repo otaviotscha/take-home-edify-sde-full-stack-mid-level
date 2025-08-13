@@ -116,6 +116,19 @@ To run the tests:
 bun run test
 ```
 
+## Future Plans
+
+Here are some future enhancements planned for this project:
+
+-   **Improve Null Safety**: Enhance the codebase to ensure better handling of null and undefined values, reducing potential runtime errors.
+-   **Bind Learning Session to User**: Currently, any user can answer any learning session. Future plans include binding learning sessions directly to the user who initiated them, ensuring data integrity and personalized learning paths.
+-   **Separate Words from Vocabulary**: Allow teachers to use the same word in several vocabulary sets. This requires a clear separation between the `Word` entity and its usage within `Vocabulary` sets, enabling greater flexibility and reusability.
+-   **Centralized Error Handling and Logging**: Implement a more robust and centralized mechanism for error handling and logging across the application to improve debugging and monitoring capabilities.
+-   **Implement Pagination and Filtering**: Add common patterns for pagination and filtering to GraphQL queries to efficiently handle large datasets and provide more flexible data retrieval options.
+-   **Enhance Input Validation**: Integrate a more comprehensive input validation pipeline, possibly using a dedicated library, to ensure data integrity and improve API robustness.
+-   **API Versioning Strategy**: Introduce an API versioning strategy to manage changes and ensure backward compatibility as the API evolves.
+-   **Improve Test Coverage**: Expand and enhance the existing test suite to achieve higher test coverage, ensuring greater stability and reliability of the application.
+
 ## License
 
 This project is licensed under the GPLv3 License. See the `LICENSE` file for details.
