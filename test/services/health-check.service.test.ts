@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'bun:test'
+import { beforeEach, describe, expect, test } from 'bun:test'
 import { HealthCheckService } from '@/services/health-check.service'
 
 describe('HealthCheckService', () => {
@@ -8,16 +8,16 @@ describe('HealthCheckService', () => {
     healthCheckService = new HealthCheckService()
   })
 
-  it('should be defined', () => {
+  test('should be defined', () => {
     expect(healthCheckService).toBeDefined()
   })
 
   describe('check', () => {
-    it('returns "OK"', () => {
+    test('returns "OK"', () => {
       expect(healthCheckService.check()).toBe('OK')
     })
 
-    it('returns a string type', () => {
+    test('returns a string type', () => {
       expect(typeof healthCheckService.check()).toBe('string')
     })
   })

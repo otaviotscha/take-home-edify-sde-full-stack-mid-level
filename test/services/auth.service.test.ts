@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, mock } from 'bun:test'
+import { beforeEach, describe, expect, mock, test } from 'bun:test'
 import { JwtService } from '@nestjs/jwt'
 import { UserRoleEnum } from '@/db/schema'
 import { AuthService } from '@/services/auth.service'
@@ -38,18 +38,18 @@ describe('AuthService', () => {
     authService = new AuthService(userService, jwtService, hashService)
   })
 
-  it('should be defined', () => {
+  test('should be defined', () => {
     expect(authService).toBeDefined()
   })
 
   describe('validateUser', () => {
-    it('returns null if user is not found', async () => {
+    test('returns null if user is not found', async () => {
       const result = await authService.validateUser('nonexistent@example.com', 'password')
       expect(result).toBeNull()
       expect(userService.findOne).toHaveBeenCalledWith('nonexistent@example.com')
     })
 
-    it('returns null if password does not match', async () => {
+    test('returns null if password does not match', async () => {
       ;(userService.findOne as ReturnType<typeof mock>).mockResolvedValue(baseMockUser)
       ;(hashService.compare as ReturnType<typeof mock>).mockResolvedValue(false)
 
@@ -59,7 +59,7 @@ describe('AuthService', () => {
       expect(hashService.compare).toHaveBeenCalledWith('wrongPassword', 'hashedPassword')
     })
 
-    it('returns the user if password matches', async () => {
+    test('returns the user if password matches', async () => {
       ;(userService.findOne as ReturnType<typeof mock>).mockResolvedValue(baseMockUser)
       ;(hashService.compare as ReturnType<typeof mock>).mockResolvedValue(true)
 
@@ -71,7 +71,7 @@ describe('AuthService', () => {
   })
 
   describe('login', () => {
-    it('returns an access token for a valid user', async () => {
+    test('returns an access token for a valid user', async () => {
       const result = await authService.login(baseMockUser)
       expect(result).toEqual({ accessToken: 'mockAccessToken' })
       expect(jwtService.sign).toHaveBeenCalledWith({
@@ -82,7 +82,7 @@ describe('AuthService', () => {
   })
 
   describe('error handling', () => {
-    it('throws if UserService.findOne fails', async () => {
+    test('throws if UserService.findOne fails', async () => {
       ;(userService.findOne as ReturnType<typeof mock>).mockRejectedValue(new Error('DB error'))
       await expect(authService.validateUser('x', 'y')).rejects.toThrow('DB error')
     })

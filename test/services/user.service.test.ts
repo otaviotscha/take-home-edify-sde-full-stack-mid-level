@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, mock } from 'bun:test'
+import { beforeEach, describe, expect, mock, test } from 'bun:test'
 import { UserRoleEnum } from '@/db/schema'
 import { UserRepository } from '@/repositories/user.repository'
 import { HashService } from '@/services/hash.service'
@@ -48,12 +48,12 @@ describe('UserService', () => {
     userService = new UserService(userRepository, hashService)
   })
 
-  it('should be defined', () => {
+  test('should be defined', () => {
     expect(userService).toBeDefined()
   })
 
   describe('createUser', () => {
-    it('hashes the password and creates a user', async () => {
+    test('hashes the password and creates a user', async () => {
       const createUserInput = {
         name: 'New User',
         email: 'new@example.com',
@@ -75,7 +75,7 @@ describe('UserService', () => {
   })
 
   describe('findAllUsers', () => {
-    it('returns an array of users', async () => {
+    test('returns an array of users', async () => {
       const result = await userService.findAllUsers()
       expect(userRepository.findAllUsers).toHaveBeenCalled()
       expect(result).toEqual([baseUser])
@@ -83,7 +83,7 @@ describe('UserService', () => {
   })
 
   describe('findUserById', () => {
-    it('returns a user by id', async () => {
+    test('returns a user by id', async () => {
       const result = await userService.findUserById('1')
       expect(userRepository.findUserById).toHaveBeenCalledWith('1')
       expect(result).toEqual(baseUser)
@@ -91,7 +91,7 @@ describe('UserService', () => {
   })
 
   describe('findOne', () => {
-    it('returns a user by email', async () => {
+    test('returns a user by email', async () => {
       const result = await userService.findOne('test@example.com')
       expect(userRepository.findOne).toHaveBeenCalledWith('test@example.com')
       expect(result).toEqual(baseUser)
@@ -99,12 +99,12 @@ describe('UserService', () => {
   })
 
   describe('updateUser', () => {
-    it('hashes the password and updates the user if password is provided', async () => {
+    test('hashes the password and updates the user if password is provided', async () => {
       const updateUserInput = { id: '1', name: 'Updated User', password: 'newPassword' }
       await userService.updateUser(updateUserInput)
     })
 
-    it('updates the user without hashing password if password is not provided', async () => {
+    test('updates the user without hashing password if password is not provided', async () => {
       const updateUserInput = { id: '1', name: 'Updated User Only' }
       const result = await userService.updateUser(updateUserInput)
       expect(hashService.hash).not.toHaveBeenCalled()
@@ -118,7 +118,7 @@ describe('UserService', () => {
   })
 
   describe('deleteUser', () => {
-    it('deletes a user by id', async () => {
+    test('deletes a user by id', async () => {
       const result = await userService.deleteUser('1')
       expect(userRepository.deleteUser).toHaveBeenCalledWith('1')
       expect(result).toEqual(baseUser)

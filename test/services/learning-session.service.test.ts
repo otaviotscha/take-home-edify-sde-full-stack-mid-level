@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, mock } from 'bun:test'
+import { beforeEach, describe, expect, mock, test } from 'bun:test'
 import { NotFoundException } from '@nestjs/common'
 import { DifficultyLevelEnum } from '@/db/schema'
 import { AttemptRepository } from '@/repositories/attempt.repository'
@@ -58,12 +58,12 @@ describe('LearningSessionService', () => {
     learningSessionService = new LearningSessionService(sessionRepo, attemptRepo, wordRepo)
   })
 
-  it('should be defined', () => {
+  test('should be defined', () => {
     expect(learningSessionService).toBeDefined()
   })
 
   describe('startSession', () => {
-    it('calls repo and returns result', async () => {
+    test('calls repo and returns result', async () => {
       ;(sessionRepo.startSession as ReturnType<typeof mock>).mockResolvedValue(baseSession)
       const result = await learningSessionService.startSession(
         { vocabularySetId: baseSession.vocabularySetId, maxDurationMs: 60000, difficulty: DifficultyLevelEnum.A1 },
@@ -81,7 +81,7 @@ describe('LearningSessionService', () => {
   })
 
   describe('getSessionById', () => {
-    it('should call sessionRepo.findSessionById and return its result', async () => {
+    test('should call sessionRepo.findSessionById and return its result', async () => {
       ;(sessionRepo.findSessionById as ReturnType<typeof mock>).mockResolvedValue(baseSession)
       const result = await learningSessionService.getSessionById(baseSession.id)
       expect(sessionRepo.findSessionById).toHaveBeenCalledWith(baseSession.id)
@@ -90,7 +90,7 @@ describe('LearningSessionService', () => {
   })
 
   describe('listSessionsByStudent', () => {
-    it('should call sessionRepo.listSessionsByStudent and return its result', async () => {
+    test('should call sessionRepo.listSessionsByStudent and return its result', async () => {
       ;(sessionRepo.listSessionsByStudent as ReturnType<typeof mock>).mockResolvedValue([baseSession])
 
       const result = await learningSessionService.listSessionsByStudent(baseSession.studentId)
@@ -100,7 +100,7 @@ describe('LearningSessionService', () => {
   })
 
   describe('getNextWordForSession', () => {
-    it('should call sessionRepo.getNextWordForSession and return its result', async () => {
+    test('should call sessionRepo.getNextWordForSession and return its result', async () => {
       ;(sessionRepo.getNextWordForSession as ReturnType<typeof mock>).mockResolvedValue(baseWord)
 
       const result = await learningSessionService.getNextWordForSession(baseSession.id)
@@ -110,7 +110,7 @@ describe('LearningSessionService', () => {
   })
 
   describe('finishSession', () => {
-    it('should throw NotFoundException if session is not found', async () => {
+    test('should throw NotFoundException if session is not found', async () => {
       ;(sessionRepo.findSessionById as ReturnType<typeof mock>).mockResolvedValue(null)
 
       expect(learningSessionService.finishSession({ sessionId: baseSession.id })).rejects.toThrow(
@@ -119,7 +119,7 @@ describe('LearningSessionService', () => {
       expect(sessionRepo.findSessionById).toHaveBeenCalledWith(baseSession.id)
     })
 
-    it('should return session if already finished', async () => {
+    test('should return session if already finished', async () => {
       const finishedSession = { ...baseSession, finishedAt: new Date() }
       ;(sessionRepo.findSessionById as ReturnType<typeof mock>).mockResolvedValue(finishedSession)
 
@@ -131,7 +131,7 @@ describe('LearningSessionService', () => {
       expect(sessionRepo.finishSession).not.toHaveBeenCalled()
     })
 
-    it('should create attempts for unattempted words and finish session', async () => {
+    test('should create attempts for unattempted words and finish session', async () => {
       const baseWords = [
         baseWord,
         {
@@ -225,7 +225,7 @@ describe('LearningSessionService', () => {
   })
 
   describe('submitAttempt', () => {
-    it('should throw NotFoundException if session is not found', async () => {
+    test('should throw NotFoundException if session is not found', async () => {
       const sessionId = 'nonexistentSession'
       ;(sessionRepo.findSessionById as ReturnType<typeof mock>).mockResolvedValue(null)
 
@@ -235,7 +235,7 @@ describe('LearningSessionService', () => {
       expect(sessionRepo.findSessionById).toHaveBeenCalledWith(sessionId)
     })
 
-    it('should return sessionFinished: true if session is already finished', async () => {
+    test('should return sessionFinished: true if session is already finished', async () => {
       const mockSession = { ...baseSession, startedAt: new Date(), finishedAt: new Date() }
       ;(sessionRepo.findSessionById as ReturnType<typeof mock>).mockResolvedValue(mockSession)
 
@@ -244,7 +244,7 @@ describe('LearningSessionService', () => {
       expect(sessionRepo.findSessionById).toHaveBeenCalledWith('session1')
     })
 
-    it('should finish session and return sessionFinished: true if session expired', async () => {
+    test('should finish session and return sessionFinished: true if session expired', async () => {
       const startedAt = new Date(Date.now() - 70000) // Started 70 seconds ago
       const mockSession = { ...baseSession, startedAt, finishedAt: null }
       ;(sessionRepo.findSessionById as ReturnType<typeof mock>).mockResolvedValue(mockSession)
@@ -260,7 +260,7 @@ describe('LearningSessionService', () => {
       expect(sessionRepo.finishSession).toHaveBeenCalledWith('session1', expect.any(Number)) // TODO: Score calculation is complex, just check it's a number for now
     })
 
-    it('should return "Word already answered." if word was already attempted', async () => {
+    test('should return "Word already answered." if word was already attempted', async () => {
       const startedAt = new Date()
       const mockSession = { ...baseSession, startedAt, finishedAt: null }
       const mockAttempt = [{ id: 'att1', wordId: 'word1' }]
@@ -273,7 +273,7 @@ describe('LearningSessionService', () => {
       expect(attemptRepo.listAttemptsForSessionAndWord).toHaveBeenCalledWith('session1', 'word1')
     })
 
-    it('should create a correct attempt and return success if next word exists', async () => {
+    test('should create a correct attempt and return success if next word exists', async () => {
       const startedAt = new Date()
       const mockSession = { ...baseSession, startedAt, finishedAt: null }
       const mockWord = { ...baseWord, term: 'apple' }
@@ -310,7 +310,7 @@ describe('LearningSessionService', () => {
       expect(sessionRepo.finishSession).not.toHaveBeenCalled()
     })
 
-    it('should create an incorrect attempt and return success if next word exists', async () => {
+    test('should create an incorrect attempt and return success if next word exists', async () => {
       const startedAt = new Date()
       const mockSession = { ...baseSession, startedAt, finishedAt: null }
       const mockWord = { ...baseWord, term: 'apple' }
@@ -347,7 +347,7 @@ describe('LearningSessionService', () => {
       expect(sessionRepo.finishSession).not.toHaveBeenCalled()
     })
 
-    it('should finish session if no next word and return sessionFinished: true', async () => {
+    test('should finish session if no next word and return sessionFinished: true', async () => {
       const startedAt = new Date()
       const mockSession = { ...baseSession, startedAt, finishedAt: null }
       const mockWord = { ...baseWord, term: 'apple' }
